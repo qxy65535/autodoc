@@ -28,18 +28,12 @@ def my_filenamecmp(name1, name2):
     str2 = int(name2.split("_")[0])
     return str1 - str2
 
-def get_margin(level=0):
-    margin = ""
-    for i in range(level):
-        margin += "　"
-    return margin
-
 def combime_folder(file, header, sub_headers, level=0):
     global navbar_md
     # insert_margin(level)
     # for i in range(level):
     #     navbar_md += "    "
-    navbar_md += '<details style="padding-left:'+str(level)+'em"><summary>' + get_navbar_link(file, header) + "</summary>\n\n"
+    navbar_md += '<details><summary>' + get_navbar_link(file, header) + "</summary>\n\n"
     for h in sub_headers:
         space = headers_name.index(h.name)
         if h.string == None or h.string == "":
@@ -74,9 +68,9 @@ def insert_navbar_title(title, level=0, bold=False):
     # for i in range(level):
     #     navbar_md += "    "
     if bold:
-        navbar_md += "**"+get_margin(level)+title+"**\n\n"
+        navbar_md += "### "+title+"\n\n"
     else:
-        navbar_md += get_margin(level)+title+"\n\n"
+        navbar_md += title+"\n\n"
 
 def generate_html(path="", level=0):
     # doc_path = base_path + 'doc/'
@@ -107,8 +101,13 @@ def generate_html(path="", level=0):
                     default = 1
         # for d in dirs:
             elif doc in dirs:
+                global navbar_md
+                navbar_md += '<div style="padding-left:'+str(level if level > 0 else 0)+'em">'
                 insert_navbar_title(doc, level, bold=True)
+                navbar_md += '</div>\n'
+                navbar_md += '<div style="padding-left:'+str(level+1 if level+1 > 0 else 0)+'em">'
                 generate_html(path+doc+"/", level+1)
+                navbar_md += '</div>\n'
         break
 
 # print(os.getcwd())

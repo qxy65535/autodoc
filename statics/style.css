@@ -13,7 +13,7 @@ header {
     padding: 20px 30px;
     /* background: green; */
     /* float: left; */
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 #left li {
@@ -25,6 +25,10 @@ header {
     padding-left: 1em;
 }
 
+/* #left > details, p {
+    background: rgb(192, 192, 192);
+} */
+
 #left > details > p {
     margin: 0;
     padding: 0;
@@ -34,10 +38,53 @@ header {
     margin-top: 0;
 }
 
+::-webkit-details-marker {
+    display: none;
+}
+
+#left a {
+    text-decoration: none;
+    color: rgb(56, 56, 56);
+}
+
+#left li {
+    margin: 5px 0;
+}
+
+#left details {
+    position: relative;
+}
+
+#left a {
+    line-height: 1.5em;
+}
+
+#left a:hover {
+    text-decoration: underline;
+}
+
+#left summary:focus {
+    outline-style:none;
+}
+
+#left summary::after {
+    content: '';
+    position: absolute;
+    width: 1em; height: 1em;
+    margin: 0.2em 0.5em;
+    background: url(/statics/image/arrow-on.svg) no-repeat;
+    background-size: 100% 100%;
+    transition: transform .2s;
+}
+
+#left [open] summary::after {
+    transform: rotate(90deg);
+}
+
 #right {
     /* width: 7%; */
     min-height: 100%;
-    padding: 20px 40px;
+    padding: 0px 40px 20px 40px;
     /* background: blue; */
     /* float: left; */
 }
@@ -61,14 +108,15 @@ footer {
 }
 
 .wrapper-left {
-    width: 25%;
+    width: 23%;
     height: 100%;
     float: left;
+    border-right: 1px solid rgba(0,0,0,.07);
     position: fixed;
 }
 
 .wrapper-right {
-    width: 75%;
+    width: 77%;
     height: 100%;
     float: right;
     margin-bottom: 8px;
