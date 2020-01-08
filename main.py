@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
-import os
+import os, sys
+import argparse
 import shutil
 from functools import cmp_to_key
 from bs4 import BeautifulSoup
@@ -47,10 +48,14 @@ def combime_folder(file, header, sub_headers, level=0):
 
 
 def get_navbar_link(file, node):
-    return "[{section}]({url}#{id})".format(section=node.string, url=file, id=node["id"])
+    if not node or not node.string:
+        return None
+    return "[{section}](#/{url}#{id})".format(section=node.string, url=file, id=node["id"])
 
 def insert_navbar_doc(file, doc_html, level=0):
     h1 = doc_html.find("h1")
+    if not h1:
+        return
     headers = doc_html.select("h2, h3, h4, h5, h6")
     # print(h1.string)
     if len(headers) == 0:
@@ -62,6 +67,8 @@ def insert_navbar_doc(file, doc_html, level=0):
         combime_folder(file, h1, headers, level)
 
 def insert_navbar_title(title, level=0, bold=False):
+    if not title:
+        return
     global navbar_md
     # print(title)
     # insert_margin(level)
@@ -85,6 +92,8 @@ def generate_html(path="", level=0):
         for doc in total:
             if doc in files:
         # for doc in files:
+                if doc.split(".")[-1] != "md":
+                    continue
                 print(path + doc)
                 doc_row_html = os.popen("pandoc " + combine_doc_path + doc).read()
                 # print(doc_row_html)
@@ -110,27 +119,41 @@ def generate_html(path="", level=0):
                 navbar_md += '</div>\n'
         break
 
-# print(os.getcwd())
-if os.path.exists(dist_path):
-    shutil.rmtree(dist_path)
-generate_html()
-with open("navbar.md", "w") as f:
-    f.write(navbar_md)
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-doc", "--doc-dir", help="input dir for markdowns, default: $(pwd)/doc", dest="doc", type=str, default="")
+    parser.add_argument("-dist", "--dist-dir", help="output dist for htmls, default: $(pwd)/dist",  dest="dist", type=str, default="")
+    args = parser.parse_args()
 
-navbar_row_html = os.popen("pandoc navbar.md").read()
-# navbar_row_html = "<div>"+navbar_row_html+"</div>"
-# print(navbar_row_html)
-os.remove("navbar.md")
+    global doc_path, dist_path
+    if args.doc:
+        doc_path = args.doc + "/"
+    if args.dist:
+        dist_path = args.dist + "/"
 
-# # navbar_html = BeautifulSoup("<div></div>", "html.parser")
-# print(navbar_html)
+    if os.path.exists(dist_path):
+        shutil.rmtree(dist_path)
+    generate_html()
+    with open("navbar.md", "w") as f:
+        f.write(navbar_md)
 
-# navbar_html.div.wrap(template.select(id="left"))
-# # template.find(id="left").insert(navbar_html)
+    navbar_row_html = os.popen("pandoc navbar.md").read()
+    # navbar_row_html = "<div>"+navbar_row_html+"</div>"
+    # print(navbar_row_html)
+    os.remove("navbar.md")
 
-with open(dist_path+"navbar.html", "w") as f:
-    f.write(navbar_row_html)
+    # # navbar_html = BeautifulSoup("<div></div>", "html.parser")
+    # print(navbar_html)
 
-shutil.copyfile(exe_path+"/template.html", dist_path+"index.html")
-shutil.copytree(exe_path+"/statics", dist_path+"statics")
-print("done.")
+    # navbar_html.div.wrap(template.select(id="left"))
+    # # template.find(id="left").insert(navbar_html)
+
+    with open(dist_path+"navbar.html", "w") as f:
+        f.write(navbar_row_html)
+
+    shutil.copyfile(exe_path+"/template.html", dist_path+"index.html")
+    shutil.copytree(exe_path+"/statics", dist_path+"statics")
+    print("done.")
+
+if __name__ == "__main__":
+    main()

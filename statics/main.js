@@ -7,41 +7,56 @@ function get_href_loc(href) {
     } else {
         l = href
     }
-    
-    if (l.split("#").length <= 1) {
+    l = l.split("#").filter((item) => item != "")
+    if (l.length <= 1) {
         return [filename, loc]
     }
     
-    l = l.split("#")
-    l = l[l.length-1].split("/")
+    // l = l.split("#")
+    // l = l[l.length-1].split("/")
 
-    if (l.length >= 2) {
+    if (l.length > 2) {
         loc = l[l.length-1]
-        l.pop()
+        filename = l[l.length-2]
+        // l.pop()
+    } else if (l.length == 2) {
+        filename = l[l.length-1]
     }
-    l = l.filter((item) => item != "").join("/")
-    if (l != "") {
-        filename = l
+    if (filename && filename[0] == '/') {
+        filename = filename.substr(1)
     }
+    // l = l.filter((item) => item != "").join("/")
+    // if (l != "") {
+    //     filename = l
+    // }
     // console.log(l)
     return [filename, loc]
 }
 
 function get_click_loc(href) {
     var h = href.split("#")
-    if (h.length >= 2) {
-        return [h[0], h[h.length-1]]
-    } else if (h.length == 0) {
-        return [h[0], ""]
+    var filename = ""
+    var loc = ""
+    if (h.length > 2) {
+        filename = h[h.length-2]
+        loc = h[h.length-1]
+        // return [h[h.length-2], h[h.length-1]]
+    } else if (h.length == 2) {
+        filename = h[h.length-1]
+        // return [h[h.length-1], ""]
     }
-    return ["", ""]
+    if (filename && filename[0] == '/') {
+        filename = filename.substr(1)
+    }
+    return [filename, loc]
 }
 
 function highlight_index(cur_select, cur) {
     var find = false
     $("#left").find("a").each(function(i,item){
+        if (find) return
         var dest = get_click_loc($(item).attr("href"))
-        if (dest[0] == decodeURI(cur[0]) && dest[1] == decodeURI(cur[1])) {
+        if (dest[0] == decodeURI(cur[0]) && (dest[1] == decodeURI(cur[1]) || decodeURI(cur[1]) == "")) {
             if (cur_select) {
                 cur_select.removeClass("selected")
             }
@@ -93,21 +108,21 @@ $(document).ready(function(){
             cur_select = $(this)
             $(this).addClass("selected")
             // var a_href = $(this).attr("href")
-            var loc = get_click_loc($(this).attr("href"))
-            var loc_cur = get_href_loc(window.location.href)
+            // var loc = get_click_loc($(this).attr("href"))
+            // var loc_cur = get_href_loc(window.location.href)
             
-            if (loc[0] == loc_cur[0]) {
-                // if (loc[1] != "")
-                //     location.href = "#"+loc[1]
-                pre_loc = location.href
-                location.href = "#/" + loc[0] + "/" + loc[1]
-                return false
-            }
+            // if (loc[0] == loc_cur[0]) {
+            //     // if (loc[1] != "")
+            //     //     location.href = "#"+loc[1]
+            //     pre_loc = location.href
+            //     location.href = "#/" + loc[0] + "/" + loc[1]
+            //     return false
+            // }
 
-            pre_loc = location.href
-            location.href = "#/" + loc[0] + "/" + loc[1]
+            // pre_loc = location.href
+            // location.href = "#/" + loc[0] + "/" + loc[1]
             
-            return false;
+            // return false;
         })
     })
 
@@ -120,7 +135,7 @@ $(document).ready(function(){
         // }
         pre_loc = location.href
         if (loc[0] != "default") {
-            location.href = "#/" + loc[0] + "/" + loc[1]
+            location.href = "#/" + loc[0] + "#" + loc[1]
         } else {
             location.href = "#"+loc[1]
         }
@@ -149,9 +164,11 @@ $(document).ready(function(){
         var cur = get_href_loc(location.href)
         pre_loc = location.href
         cur_select = highlight_index(cur_select, cur)
-
-        
         if (pre[0] == cur[0] && cur[1]) {
+            
+            if (cur[1] == "") {
+                $("html,body").animate({scrollTop: 0}, 200)
+            } 
             // console.log(decodeURI($("[id='"+decodeURI(cur[1])+"']'").offset()))
             var top = $("[id='"+decodeURI(cur[1])+"']").offset().top-parseInt($(".inner-wrapper").css("paddingTop"))
             top -= parseInt($("[id='"+decodeURI(cur[1])+"']").css("marginTop"))
@@ -164,6 +181,9 @@ $(document).ready(function(){
             document.querySelectorAll('pre code').forEach((block) => {
                 hljs.highlightBlock(block)
             });
+            if (cur[1] == "") {
+                $("html,body").animate({scrollTop: 0}, 200)
+            } 
             if (cur[1]) {
                 var top = $("[id='"+decodeURI(cur[1])+"']").offset().top-parseInt($(".inner-wrapper").css("paddingTop"))
                 top -= parseInt($("[id='"+decodeURI(cur[1])+"']").css("marginTop"))
