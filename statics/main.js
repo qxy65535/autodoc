@@ -52,13 +52,12 @@ function highlight_index(cur_select, cur) {
     })
 
     var node = cur_select
-    var p = null
-    while (p = node.parent()) {
-        if (p[0].tagName == "DETAILS") {
-            if (p.attr("open")) {
+    while (node && node[0]) {
+        if (node[0].tagName == "DETAILS") {
+            if (node.attr("open")) {
                 // p.removeAttr("open")
             } else {
-                p.attr("open", "")
+                node.attr("open", "")
             }
             break
         }
@@ -126,8 +125,15 @@ $(document).ready(function(){
             location.href = "#"+loc[1]
         }
         cur_select = highlight_index(cur_select, loc)
-        var top = cur_select.offset().top-parseInt($(".inner-wrapper").css("paddingTop")) - 20
-        $("#left").animate({scrollTop: top}, 200)
+        var top = 0
+        if (cur_select) {
+            var p = cur_select
+            while (p && p.attr("id") != "left") {
+                top += p.position().top
+                p = p.parent()
+            }
+            $("#left").animate({scrollTop: top}, 200)
+        }
         if (loc[1]) {
             top = $("[id='"+decodeURI(loc[1])+"']").offset().top-parseInt($(".inner-wrapper").css("paddingTop"))
             top -= parseInt($("[id='"+decodeURI(loc[1])+"']").css("marginTop"))

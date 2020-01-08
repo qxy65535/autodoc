@@ -27,6 +27,7 @@ header img {
     /* width: 20%; */
     height: 100%;
     padding: 20px 30px;
+    position: relative;
     /* background: green; */
     /* float: left; */
     overflow-y: auto;
@@ -65,6 +66,11 @@ header img {
 #left a {
     text-decoration: none;
     color: rgb(56, 56, 56);
+    line-height: 1.5em;
+}
+
+#left a:hover {
+    text-decoration: underline;
 }
 
 #left a.selected {
@@ -79,12 +85,8 @@ header img {
     position: relative;
 }
 
-#left a {
-    line-height: 1.5em;
-}
-
-#left a:hover {
-    text-decoration: underline;
+#left div, ul, li, a, p {
+    position: relative;
 }
 
 #left summary:focus {
