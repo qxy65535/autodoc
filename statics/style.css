@@ -7,6 +7,7 @@ header {
     position: fixed;
     border-bottom: 1px solid rgba(0,0,0,.07);
     overflow:hidden;
+    z-index: 99;
 }
 
 header > div {
@@ -33,11 +34,11 @@ header img {
 
 #left li {
     list-style-type: none;
-    padding-left: 1em;
+    /* padding-left: 1em; */
 }
 
 #left ul {
-    padding-left: 1em;
+    padding-left: 1.5em;
 }
 
 /* #left > details, p {
@@ -148,6 +149,8 @@ footer {
 .inner-wrapper {
     padding-top: 45px;
     width: 100%;
+    height: 100%;
+    position: absolute;
 }
 
 html {

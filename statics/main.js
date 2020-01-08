@@ -37,26 +37,41 @@ function get_click_loc(href) {
     return ["", ""]
 }
 
+function highlight_index(cur_select, cur) {
+    var find = false
+    $("#left").find("a").each(function(i,item){
+        var dest = get_click_loc($(item).attr("href"))
+        if (dest[0] == decodeURI(cur[0]) && dest[1] == decodeURI(cur[1])) {
+            if (cur_select) {
+                cur_select.removeClass("selected")
+            }
+            cur_select = $(item)
+            $(item).addClass("selected")
+            find = true
+        }
+    })
+
+    var node = cur_select
+    var p = null
+    while (p = node.parent()) {
+        if (p[0].tagName == "DETAILS") {
+            if (p.attr("open")) {
+                // p.removeAttr("open")
+            } else {
+                p.attr("open", "")
+            }
+            break
+        }
+        node = node.parent()
+    }
+    return cur_select
+}
+
 $(document).ready(function(){
     var pre_loc = ""
     var loc = get_href_loc(window.location.href)
     var cur_select = null
     // console.log(loc)
-    $("#right").empty().load(/*default_file*/loc[0]+".html", function(response,status,xhr) {
-        document.querySelectorAll('pre code').forEach((block) => {
-            hljs.highlightBlock(block)
-        });
-        // if (loc[1] != "") {
-        //     location.href = "#"+loc[1]
-        // }
-        pre_loc = location.href
-        if (loc[0] != "default") {
-            location.href = "#/" + loc[0] + "/" + loc[1]
-        } else {
-            location.href = "#"+loc[1]
-        }
-
-    });
 
     $("#left").empty().load("navbar.html", function(response,status,xhr) {
         $("#left a").click(function(){
@@ -66,7 +81,7 @@ $(document).ready(function(){
                 // console.log(p)
                 if (p[0].tagName == "DETAILS") {
                     if (p.attr("open")) {
-                        p.removeAttr("open")
+                        // p.removeAttr("open")
                     } else {
                         p.attr("open", "")
                     }
@@ -78,7 +93,6 @@ $(document).ready(function(){
             }
             cur_select = $(this)
             $(this).addClass("selected")
-            cur_select = $(this)
             // var a_href = $(this).attr("href")
             var loc = get_click_loc($(this).attr("href"))
             var loc_cur = get_href_loc(window.location.href)
@@ -98,14 +112,40 @@ $(document).ready(function(){
         })
     })
 
+    $("#right").empty().load(/*default_file*/loc[0]+".html", function(response,status,xhr) {
+        document.querySelectorAll('pre code').forEach((block) => {
+            hljs.highlightBlock(block)
+        });
+        // if (loc[1] != "") {
+        //     location.href = "#"+loc[1]
+        // }
+        pre_loc = location.href
+        if (loc[0] != "default") {
+            location.href = "#/" + loc[0] + "/" + loc[1]
+        } else {
+            location.href = "#"+loc[1]
+        }
+        cur_select = highlight_index(cur_select, loc)
+        var top = cur_select.offset().top-parseInt($(".inner-wrapper").css("paddingTop")) - 20
+        $("#left").animate({scrollTop: top}, 200)
+        if (loc[1]) {
+            top = $("[id='"+decodeURI(loc[1])+"']").offset().top-parseInt($(".inner-wrapper").css("paddingTop"))
+            top -= parseInt($("[id='"+decodeURI(loc[1])+"']").css("marginTop"))
+            $("html,body").animate({scrollTop: top}, 200)
+        }
+    });
+
+
     $(window).on('hashchange', function(e) {
         // console.log(pre_loc)
         // console.log(location.href);
         var pre = get_href_loc(pre_loc)
         var cur = get_href_loc(location.href)
         pre_loc = location.href
+        cur_select = highlight_index(cur_select, cur)
+
         
-        if (pre[0] == cur[0]) {
+        if (pre[0] == cur[0] && cur[1]) {
             // console.log(decodeURI($("[id='"+decodeURI(cur[1])+"']'").offset()))
             var top = $("[id='"+decodeURI(cur[1])+"']").offset().top-parseInt($(".inner-wrapper").css("paddingTop"))
             top -= parseInt($("[id='"+decodeURI(cur[1])+"']").css("marginTop"))
@@ -118,9 +158,11 @@ $(document).ready(function(){
             document.querySelectorAll('pre code').forEach((block) => {
                 hljs.highlightBlock(block)
             });
-            var top = $("[id='"+decodeURI(cur[1])+"']").offset().top-parseInt($(".inner-wrapper").css("paddingTop"))
-            top -= parseInt($("[id='"+decodeURI(cur[1])+"']").css("marginTop"))
-            $("html,body").animate({scrollTop: top}, 200)
+            if (cur[1]) {
+                var top = $("[id='"+decodeURI(cur[1])+"']").offset().top-parseInt($(".inner-wrapper").css("paddingTop"))
+                top -= parseInt($("[id='"+decodeURI(cur[1])+"']").css("marginTop"))
+                $("html,body").animate({scrollTop: top}, 200)
+            }
         });
     });
     
@@ -128,8 +170,8 @@ $(document).ready(function(){
     var left_height = $(window).height() - margin_top - 5
     $(".wrapper-left").height(left_height)
     $("#left").height(left_height - parseInt($("#left").css("paddingTop")) - parseInt($("#left").css("paddingBottom")))
-    if ($(".wrapper-right").height() < $(".wrapper-left").height()) {
-        $(".wrapper-right").height($(".wrapper-left").height())
-    }
+    // if ($(".wrapper-right").height() < $(".wrapper-left").height()) {
+    //     $(".wrapper-right").height($(".wrapper-left").height())
+    // }
 
 })

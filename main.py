@@ -105,7 +105,7 @@ def generate_html(path="", level=0):
                 # navbar_md += '<div style="padding-left:'+str(level if level > 0 else 0)+'em">'
                 insert_navbar_title(doc, level, bold=True)
                 # navbar_md += '</div>\n'
-                navbar_md += '<div style="padding-left:1em">'
+                navbar_md += '<div style="padding-left:1.5em">'
                 generate_html(path+doc+"/", level+1)
                 navbar_md += '</div>\n'
         break
