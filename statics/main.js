@@ -40,6 +40,7 @@ function get_click_loc(href) {
 $(document).ready(function(){
     var pre_loc = ""
     var loc = get_href_loc(window.location.href)
+    var cur_select = null
     // console.log(loc)
     $("#right").empty().load(/*default_file*/loc[0]+".html", function(response,status,xhr) {
         document.querySelectorAll('pre code').forEach((block) => {
@@ -72,11 +73,16 @@ $(document).ready(function(){
                     // console.log(p.attr("open"))
                 }
             }
+            if (cur_select) {
+                cur_select.removeClass("selected")
+            }
+            cur_select = $(this)
+            $(this).addClass("selected")
+            cur_select = $(this)
             // var a_href = $(this).attr("href")
             var loc = get_click_loc($(this).attr("href"))
             var loc_cur = get_href_loc(window.location.href)
             
-
             if (loc[0] == loc_cur[0]) {
                 // if (loc[1] != "")
                 //     location.href = "#"+loc[1]
@@ -125,28 +131,5 @@ $(document).ready(function(){
     if ($(".wrapper-right").height() < $(".wrapper-left").height()) {
         $(".wrapper-right").height($(".wrapper-left").height())
     }
-    // $(".wrapper-right").css("left", $(".wrapper-left").width()+"px")
-    // $(window).scroll(function(event){
-    //     // console.log(i)
-    //     var cur_top = $(this).scrollTop()
-    //     // if (Math.abs(cur_top-pre_top) < 5) {
-    //     //     return
-    //     // }
-    //     if (cur_top + left_height < $("footer").position().top) {
-    //         // $(".wrapper-left").css("bottom", "0px")
-    //         // $(".wrapper-left").css("top", "0px")
-    //         $("#left").height(left_height - parseInt($("#left").css("paddingTop")) - parseInt($("#left").css("paddingBottom")))
-    //         $(".wrapper-left").height(left_height)
-    //     } else {
-    //         // console.log(cur_top, $("footer").position().top)
-    //         var h = $("footer").position().top-cur_top-5
-    //         $("#left").height(h - parseInt($("#left").css("paddingTop")) - parseInt($("#left").css("paddingBottom")))
-    //         $(".wrapper-left").height(h)
-    //     }
-    //     // console.log($(this).scrollTop())
-    // })
-// console.log($("body").css("marginTop"))
-    // $(".wrapper-left").fixedScroll()
-    // $(".wrapper-left").fixedScroll()
 
 })

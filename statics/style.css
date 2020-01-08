@@ -57,9 +57,17 @@ header img {
     display: none;
 }
 
+::-moz-list-bullet {
+    font-size: 0;
+}
+
 #left a {
     text-decoration: none;
     color: rgb(56, 56, 56);
+}
+
+#left a.selected {
+    color: rgb(90, 151, 201);
 }
 
 #left li {

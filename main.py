@@ -102,10 +102,10 @@ def generate_html(path="", level=0):
         # for d in dirs:
             elif doc in dirs:
                 global navbar_md
-                navbar_md += '<div style="padding-left:'+str(level if level > 0 else 0)+'em">'
+                # navbar_md += '<div style="padding-left:'+str(level if level > 0 else 0)+'em">'
                 insert_navbar_title(doc, level, bold=True)
-                navbar_md += '</div>\n'
-                navbar_md += '<div style="padding-left:'+str(level+1 if level+1 > 0 else 0)+'em">'
+                # navbar_md += '</div>\n'
+                navbar_md += '<div style="padding-left:1em">'
                 generate_html(path+doc+"/", level+1)
                 navbar_md += '</div>\n'
         break
