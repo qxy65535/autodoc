@@ -11,7 +11,7 @@
 
 ## Autodoc目录结构
 
-`statics`：生成的html静态页需要的图片、样式和js
+`styles`：生成的html静态页需要的图片、样式和js
 
 `main.py`：自动文档生成脚本
 

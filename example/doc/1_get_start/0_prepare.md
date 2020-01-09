@@ -8,8 +8,8 @@
 
 ## Autodoc目录结构
 
-statics：生成的html静态页需要的图片、样式和js
+`styles`：生成的html静态页需要的图片、样式和js
 
-main.py：自动文档生成脚本
+`main.py`：自动文档生成脚本
 
-template.html：主页模板，可在header、footer标签中修改页首页脚内容
+`template.html`：主页模板，可在header、footer标签中修改页首页脚内容
