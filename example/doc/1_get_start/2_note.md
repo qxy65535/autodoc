@@ -16,6 +16,12 @@
 <link rel="stylesheet" href="/statics/styles/github.css">
 ```
 
+## 关于图片
+
+<img src="assets/Bye_Mice.png" style="zoom: 25%;" />
+
+插入图片需要在当前`markdown`同级目录下建立`assets`文件夹，并将图片放于`assets`下，使用相对路径引用，如上图。脚本会将所有`assets`下的文件及文件夹拷贝到`dist`顶层`assets`目录下
+
 ## 关于id和页内跳转
 
 跳转到内部文档的某页，链接格式需写为
@@ -36,10 +42,18 @@
 
 ### 例子
 
-[跳转到INTRODUCTION](#/0_introduction#introduction)
+[跳转到INTRODUCTION](#/0_introduction#INTRODUCTION)
 
 [跳转到文档生成的example](#/1_get_start/1_generate#example)
 
 [跳转到本页的关于样式](#/1_get_start/2_note#关于样式)
 
 [也可以不带锚点跳转到文档生成](#/1_get_start/1_generate)
+
+## 关于文档的文件名和目录名
+
+目录和文件必须以**`数字_标题`**的格式命名，在左侧导航目录的展示顺序由目录名中的数字决定。若不按照此格式进行命名，排序顺序将随缘
+
+`markdown`文件在导航目录中的标题以文件中第一个一级标题决定
+
+目录文件夹在导航目录中的标题由目录本身决定，目前脚本将去掉其数字前缀并替换`_`为空格

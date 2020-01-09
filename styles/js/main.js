@@ -30,7 +30,7 @@ function get_href_loc(href) {
     //     filename = l
     // }
     // console.log(l)
-    return [filename, loc]
+    return [decodeURI(filename), decodeURI(loc).toLowerCase()]
 }
 
 function get_click_loc(href) {
@@ -48,7 +48,7 @@ function get_click_loc(href) {
     if (filename && filename[0] == '/') {
         filename = filename.substr(1)
     }
-    return [filename, loc]
+    return [decodeURI(filename), decodeURI(loc).toLowerCase()]
 }
 
 function highlight_index(cur_select, cur) {
@@ -56,7 +56,7 @@ function highlight_index(cur_select, cur) {
     $("#left").find("a").each(function(i,item){
         if (find) return
         var dest = get_click_loc($(item).attr("href"))
-        if (dest[0] == decodeURI(cur[0]) && (dest[1] == decodeURI(cur[1]) || decodeURI(cur[1]) == "")) {
+        if (dest[0] == cur[0] && (dest[1] == cur[1] || cur[1] == "")) {
             if (cur_select) {
                 cur_select.removeClass("selected")
             }
@@ -127,6 +127,9 @@ $(document).ready(function(){
     })
 
     $("#right").empty().load(/*default_file*/loc[0]+".html", function(response,status,xhr) {
+        if (status == "error") {
+            alert("error page")
+        }
         document.querySelectorAll('pre code').forEach((block) => {
             hljs.highlightBlock(block)
         });
@@ -150,8 +153,8 @@ $(document).ready(function(){
             $("#left").animate({scrollTop: top}, 200)
         }
         if (loc[1]) {
-            top = $("[id='"+decodeURI(loc[1])+"']").offset().top-parseInt($(".inner-wrapper").css("paddingTop"))
-            top -= parseInt($("[id='"+decodeURI(loc[1])+"']").css("marginTop"))
+            top = $("[id='"+loc[1]+"']").offset().top-parseInt($(".inner-wrapper").css("paddingTop"))
+            top -= parseInt($("[id='"+loc[1]+"']").css("marginTop"))
             $("html,body").animate({scrollTop: top}, 200)
         }
     });
@@ -170,14 +173,17 @@ $(document).ready(function(){
                 $("html,body").animate({scrollTop: 0}, 200)
             } 
             // console.log(decodeURI($("[id='"+decodeURI(cur[1])+"']'").offset()))
-            var top = $("[id='"+decodeURI(cur[1])+"']").offset().top-parseInt($(".inner-wrapper").css("paddingTop"))
-            top -= parseInt($("[id='"+decodeURI(cur[1])+"']").css("marginTop"))
+            var top = $("[id='"+cur[1]+"']").offset().top-parseInt($(".inner-wrapper").css("paddingTop"))
+            top -= parseInt($("[id='"+cur[1]+"']").css("marginTop"))
             $("html,body").animate({scrollTop: top}, 200)
             return
         }
 
         $('#right').empty().load(/*file*/cur[0]+".html",function(response,status,xhr){
                 // hljs.initHighlighting()
+            if (status == "error") {
+                alert("error page")
+            }
             document.querySelectorAll('pre code').forEach((block) => {
                 hljs.highlightBlock(block)
             });
@@ -185,8 +191,9 @@ $(document).ready(function(){
                 $("html,body").animate({scrollTop: 0}, 200)
             } 
             if (cur[1]) {
-                var top = $("[id='"+decodeURI(cur[1])+"']").offset().top-parseInt($(".inner-wrapper").css("paddingTop"))
-                top -= parseInt($("[id='"+decodeURI(cur[1])+"']").css("marginTop"))
+                console.log(cur)
+                var top = $("[id='"+cur[1]+"']").offset().top-parseInt($(".inner-wrapper").css("paddingTop"))
+                top -= parseInt($("[id='"+cur[1]+"']").css("marginTop"))
                 $("html,body").animate({scrollTop: top}, 200)
             }
         });

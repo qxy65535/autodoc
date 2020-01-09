@@ -25,8 +25,11 @@ dist_path = os.getcwd() + "/dist/"
 # print os.popen("ping www.baidu.com").read()
 
 def my_filenamecmp(name1, name2):
-    str1 = int(name1.split("_")[0])
-    str2 = int(name2.split("_")[0])
+    try:
+        str1 = int(name1.split("_")[0])
+        str2 = int(name2.split("_")[0])
+    except:
+        return 0
     return str1 - str2
 
 def combime_folder(file, header, sub_headers, level=0):
@@ -79,6 +82,16 @@ def insert_navbar_title(title, level=0, bold=False):
     else:
         navbar_md += title+"\n\n"
 
+def copy_assets(srcdir, dstdir):
+    for f in os.listdir(srcdir):
+        src = os.path.join(srcdir, f)
+        dst = os.path.join(dstdir, f)
+        if os.path.isdir(src):
+            shutil.copytree(src, dst)
+        if os.path.isfile(src):
+            shutil.copyfile(src, dst)
+
+
 def generate_html(path="", level=0):
     # doc_path = base_path + 'doc/'
     for root, dirs, files in os.walk(doc_path+path):
@@ -110,9 +123,14 @@ def generate_html(path="", level=0):
                     default = 1
         # for d in dirs:
             elif doc in dirs:
+                if doc == "assets":
+                    if not os.path.exists(dist_path+"/assets"):
+                        os.makedirs(dist_path+"/assets")
+                    copy_assets(combine_doc_path+"/assets", dist_path+"/assets")
+                    continue
                 global navbar_md
                 # navbar_md += '<div style="padding-left:'+str(level if level > 0 else 0)+'em">'
-                insert_navbar_title(doc, level, bold=True)
+                insert_navbar_title(" ".join(doc.split("_")[1:]) if "_" in doc else doc, level, bold=True)
                 # navbar_md += '</div>\n'
                 navbar_md += '<div style="padding-left:1.5em">'
                 generate_html(path+doc+"/", level+1)
@@ -152,7 +170,7 @@ def main():
         f.write(navbar_row_html)
 
     shutil.copyfile(exe_path+"/template.html", dist_path+"index.html")
-    shutil.copytree(exe_path+"/statics", dist_path+"statics")
+    shutil.copytree(exe_path+"/styles", dist_path+"styles")
     print("done.")
 
 if __name__ == "__main__":
