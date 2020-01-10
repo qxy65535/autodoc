@@ -14,15 +14,6 @@ exe_path = os.path.abspath(os.path.dirname(__file__)) + "/"
 doc_path = os.getcwd() + "/doc/"
 dist_path = os.getcwd() + "/dist/"
 
-# with open("template.html", "r") as f:
-#     template = f.read()
-
-# print(template)
-# template = BeautifulSoup(template, "html.parser")
-# links = template.find_all("div")
-# links[0]["href"] = "111"
-# print(links[0]["href"])
-# print os.popen("ping www.baidu.com").read()
 
 def my_filenamecmp(name1, name2):
     try:
@@ -34,9 +25,6 @@ def my_filenamecmp(name1, name2):
 
 def combime_folder(file, header, sub_headers, level=0):
     global navbar_md
-    # insert_margin(level)
-    # for i in range(level):
-    #     navbar_md += "    "
     navbar_md += '<details><summary>' + get_navbar_link(file, header) + "</summary>\n\n"
     for h in sub_headers:
         space = headers_name.index(h.name)
@@ -60,12 +48,8 @@ def insert_navbar_doc(file, doc_html, level=0):
     if not h1:
         return
     headers = doc_html.select("h2, h3, h4, h5, h6")
-    # print(h1.string)
     if len(headers) == 0:
-        # print(doc_html)
         insert_navbar_title(get_navbar_link(file, h1), level)
-        # global navbar_md
-        # navbar_md += get_navbar_link(file, h1)
     else:
         combime_folder(file, h1, headers, level)
 
@@ -73,10 +57,7 @@ def insert_navbar_title(title, level=0, bold=False):
     if not title:
         return
     global navbar_md
-    # print(title)
-    # insert_margin(level)
-    # for i in range(level):
-    #     navbar_md += "    "
+
     if bold:
         navbar_md += "### "+title+"\n\n"
     else:
@@ -104,7 +85,6 @@ def generate_html(path="", level=0):
         combine_dist_path = dist_path + path
         for doc in total:
             if doc in files:
-        # for doc in files:
                 if doc.split(".")[-1] != "md":
                     continue
                 print(path + doc)
@@ -121,7 +101,6 @@ def generate_html(path="", level=0):
                     with open(combine_dist_path+"default.html", "w") as f:
                         f.write(doc_html.prettify(formatter="html"))
                     default = 1
-        # for d in dirs:
             elif doc in dirs:
                 if doc == "assets":
                     if not os.path.exists(dist_path+"/assets"):
@@ -156,15 +135,7 @@ def main():
         f.write(navbar_md)
 
     navbar_row_html = os.popen("pandoc navbar.md").read()
-    # navbar_row_html = "<div>"+navbar_row_html+"</div>"
-    # print(navbar_row_html)
     os.remove("navbar.md")
-
-    # # navbar_html = BeautifulSoup("<div></div>", "html.parser")
-    # print(navbar_html)
-
-    # navbar_html.div.wrap(template.select(id="left"))
-    # # template.find(id="left").insert(navbar_html)
 
     with open(dist_path+"navbar.html", "w") as f:
         f.write(navbar_row_html)
